@@ -15,10 +15,20 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Make REST API request
+    - name: Check required reviewers
       run: |
         response=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
              -H "Accept: application/vnd.github.v3+json" \
              https://api.github.com/repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/pulls/${{ github.event.number }}/requested_reviewers)
         slugs=$(echo "$response" | jq -r '.teams[] | .slug')
-        echo "$slugs"
+        for slug in $slugs; do
+          if [ "$slug" == "my-reviewers" ]; then
+            echo "REQUIRED=true" >> "$GITHUB_ENV"
+            exit 0
+          fi
+        done
+    
+    - name: "check if approved"
+      if: ${{ $REQUIRED == true }}
+      run: |
+        echo "has required reviewer"
