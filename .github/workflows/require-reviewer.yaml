@@ -23,11 +23,10 @@ jobs:
         slugs=$(echo "$response" | jq -r '.teams[] | .slug')
         for slug in $slugs; do
           if [ "$slug" == "my-reviewers" ]; then
-            echo "REQUIRED=true" >> "$GITHUB_ENV"
+            echo "Required=true" >> "$GITHUB_ENV"
             exit 0
           fi
         done
     
     - name: "check if approved"
-      run: |
-        echo "has required reviewer $REQUIRED"
+      run: echo "This is $Required"
