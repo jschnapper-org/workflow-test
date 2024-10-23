@@ -29,6 +29,5 @@ jobs:
         done
     
     - name: "check if approved"
-      if: ${{ $REQUIRED == true }}
       run: |
-        echo "has required reviewer"
+        echo "has required reviewer $REQUIRED"
